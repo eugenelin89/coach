@@ -1,0 +1,97 @@
+.app-root {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+}
+
+.app-background {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(107, 91, 255, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.25), transparent 55%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #f5f6fb 100%);
+  z-index: 0;
+}
+
+.app-container {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  padding: 3.5rem 0 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.headline-group {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6366f1;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  font-weight: 700;
+  color: #101828;
+}
+
+.lede {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #475467;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 22px 45px rgba(15, 23, 42, 0.1);
+}
+
+.recommendation-panel {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  min-height: 540px;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 2.5rem 0 3rem;
+  }
+
+  .panel {
+    padding: 1.5rem;
+  }
+
+  .recommendation-panel {
+    position: static;
+  }
+}

@@ -11,5 +11,12 @@ __pycache__/
 # Django / SQLite
 *.sqlite3
 
+# Node / frontend
+node_modules/
+.env.local
+
+# IDE
+*.code-workspace
+
 # macOS
 .DS_Store

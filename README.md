@@ -1,6 +1,6 @@
 # Coach Backend
 
-Baseball coaching backend powered by Django and Django REST Framework. It stores game situations, generates strategic recommendations for the next play, and exposes them through a JSON API that future web and mobile clients can consume.
+Baseball coaching backend powered by Django and Django REST Framework. It stores game situations, generates strategic recommendations for the next play, and exposes them through a JSON API that future web and mobile clients can consume. A React-based single-page application is available in the `frontend/` directory to capture a play scenario and display the engine's recommendation.
 
 ## Getting Started
 
@@ -18,6 +18,20 @@ Baseball coaching backend powered by Django and Django REST Framework. It stores
    ```bash
    python manage.py runserver
    ```
+
+### Frontend (React single-page app)
+
+1. Install dependencies:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. Start the development server (make sure the Django API is running on `http://localhost:8000`):
+   ```bash
+   npm run dev
+   ```
+3. Open the URL printed in the console (default `http://localhost:5173`) to use the interface.
+4. To target a different API host, create a `.env.local` file in `frontend/` with `VITE_API_BASE_URL="http://your-host:port"`.
 
 ## Running Tests
 
