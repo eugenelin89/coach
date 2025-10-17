@@ -1,0 +1,318 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coach Playcalling Assistant</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        padding: 2rem;
+        background: radial-gradient(circle at top, #0b1f3a 0%, #02070f 60%, #010409 100%);
+        color: #f8fafc;
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+        font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .layout {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+
+      .card {
+        background: rgba(15, 23, 42, 0.85);
+        border-radius: 18px;
+        padding: 1.75rem;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        backdrop-filter: blur(10px);
+      }
+
+      form {
+        display: grid;
+        gap: 1.2rem;
+      }
+
+      fieldset {
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
+        padding: 1rem 1.25rem 1.25rem;
+      }
+
+      fieldset legend {
+        padding: 0 0.6rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #94a3b8;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.35rem;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.7rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(15, 23, 42, 0.6);
+        color: inherit;
+        font-size: 0.95rem;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      .checkbox-group {
+        display: grid;
+        gap: 0.6rem;
+        margin-top: 0.5rem;
+      }
+
+      .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        width: 1.1rem;
+        height: 1.1rem;
+        accent-color: #38bdf8;
+      }
+
+      .submit-row {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      button[type="submit"] {
+        padding: 0.75rem 1.5rem;
+        border-radius: 999px;
+        border: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        color: #0f172a;
+        background: linear-gradient(135deg, #22d3ee, #38bdf8 55%, #0ea5e9 100%);
+        box-shadow: 0 16px 40px rgba(14, 165, 233, 0.35);
+      }
+
+      .errors {
+        background: rgba(248, 113, 113, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        color: #fecaca;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+      }
+
+      .recommendation h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+        letter-spacing: 0.02em;
+      }
+
+      .recommendation-section {
+        margin-top: 1rem;
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .recommendation-section strong {
+        color: #bae6fd;
+      }
+
+      ul.key-points {
+        list-style: none;
+        padding-left: 0;
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      ul.key-points li::before {
+        content: "⚾";
+        margin-right: 0.5rem;
+      }
+
+      .history-toast {
+        margin-top: 1rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 10px;
+        background: rgba(74, 222, 128, 0.12);
+        border: 1px solid rgba(74, 222, 128, 0.35);
+        color: #bbf7d0;
+        font-weight: 500;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Coach Strategy Command Center</h1>
+    <div class="layout">
+      <div class="card">
+        {% if form.non_field_errors %}
+          <div class="errors">
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <fieldset>
+            <legend>Game Context</legend>
+            <label for="id_offense_team">{{ form.offense_team.label }}{% if form.offense_team.field.required %} *{% endif %}</label>
+            {{ form.offense_team }}
+            {% if form.offense_team.errors %}
+              <div class="errors">{{ form.offense_team.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_defense_team">{{ form.defense_team.label }}{% if form.defense_team.field.required %} *{% endif %}</label>
+            {{ form.defense_team }}
+            {% if form.defense_team.errors %}
+              <div class="errors">{{ form.defense_team.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_inning">{{ form.inning.label }}{% if form.inning.field.required %} *{% endif %}</label>
+            {{ form.inning }}
+            {% if form.inning.errors %}
+              <div class="errors">{{ form.inning.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_half_inning">{{ form.half_inning.label }}{% if form.half_inning.field.required %} *{% endif %}</label>
+            {{ form.half_inning }}
+            {% if form.half_inning.errors %}
+              <div class="errors">{{ form.half_inning.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_score_difference">{{ form.score_difference.label }}{% if form.score_difference.field.required %} *{% endif %}</label>
+            {{ form.score_difference }}
+            <small>{{ form.score_difference.help_text }}</small>
+            {% if form.score_difference.errors %}
+              <div class="errors">{{ form.score_difference.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_context_notes">{{ form.context_notes.label }}</label>
+            {{ form.context_notes }}
+            {% if form.context_notes.errors %}
+              <div class="errors">{{ form.context_notes.errors|join:" " }}</div>
+            {% endif %}
+          </fieldset>
+
+          <fieldset>
+            <legend>Count &amp; Baserunners</legend>
+            <label for="id_outs">{{ form.outs.label }}{% if form.outs.field.required %} *{% endif %}</label>
+            {{ form.outs }}
+            {% if form.outs.errors %}
+              <div class="errors">{{ form.outs.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_balls">{{ form.balls.label }}{% if form.balls.field.required %} *{% endif %}</label>
+            {{ form.balls }}
+            {% if form.balls.errors %}
+              <div class="errors">{{ form.balls.errors|join:" " }}</div>
+            {% endif %}
+
+            <label for="id_strikes">{{ form.strikes.label }}{% if form.strikes.field.required %} *{% endif %}</label>
+            {{ form.strikes }}
+            {% if form.strikes.errors %}
+              <div class="errors">{{ form.strikes.errors|join:" " }}</div>
+            {% endif %}
+
+            <div class="checkbox-group">
+              <label>{{ form.runners_on_first }} {{ form.runners_on_first.label }}</label>
+              <label>{{ form.runners_on_second }} {{ form.runners_on_second.label }}</label>
+              <label>{{ form.runners_on_third }} {{ form.runners_on_third.label }}</label>
+            </div>
+            {% if form.runners_on_first.errors or form.runners_on_second.errors or form.runners_on_third.errors %}
+              <div class="errors">
+                {{ form.runners_on_first.errors|join:" " }}
+                {{ form.runners_on_second.errors|join:" " }}
+                {{ form.runners_on_third.errors|join:" " }}
+              </div>
+            {% endif %}
+          </fieldset>
+
+          <fieldset>
+            <legend>History</legend>
+            <label class="checkbox-group">
+              {{ form.save_to_history }}
+              <span>{{ form.save_to_history.label }}</span>
+            </label>
+          </fieldset>
+
+          <div class="submit-row">
+            <button type="submit">Generate Strategy</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card recommendation">
+        {% if recommendation %}
+          <h2>Recommended Plan</h2>
+          <div class="recommendation-section">
+            <div><strong>Pitch Call:</strong> {{ recommendation.pitch_call }}</div>
+            <div><strong>Catcher Plan:</strong> {{ recommendation.catcher_plan }}</div>
+            <div>
+              <strong>Defensive Alignment</strong>
+              <ul class="key-points">
+                {% for key, value in recommendation.defensive_alignment.items %}
+                  <li><strong>{{ key|capfirst }}:</strong> {{ value }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <strong>Offensive Signs</strong>
+              <ul class="key-points">
+                {% for key, value in recommendation.offensive_signs.items %}
+                  <li><strong>{{ key|capfirst }}:</strong> {{ value }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <strong>Key Points</strong>
+              <ul class="key-points">
+                {% for point in recommendation.key_points %}
+                  <li>{{ point }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          {% if history_created %}
+            <div class="history-toast">Recommendation saved to the play log.</div>
+          {% endif %}
+        {% else %}
+          <h2>Ready when you are.</h2>
+          <p>Provide the game situation on the left to receive a tailored defensive and offensive strategy instantly.</p>
+          <p>Every suggestion is grounded in the same rule-based engine that powers the public API.</p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

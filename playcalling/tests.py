@@ -1,4 +1,4 @@
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -116,3 +116,36 @@ class GamePlayViewSetTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
+
+
+class RecommendationDashboardTests(TestCase):
+    def setUp(self):
+        self.url = reverse('dashboard')
+
+    def test_dashboard_renders_form(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('form', response.context)
+
+    def test_dashboard_post_generates_recommendation(self):
+        payload = {
+            'offense_team': 'Visitors',
+            'defense_team': 'Home',
+            'inning': 6,
+            'half_inning': 'top',
+            'outs': 1,
+            'balls': 2,
+            'strikes': 1,
+            'runners_on_first': 'on',
+            'runners_on_third': 'on',
+            'score_difference': 1,
+            'context_notes': 'High leverage situation',
+            'save_to_history': 'on',
+        }
+
+        response = self.client.post(self.url, data=payload)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.context['recommendation'])
+        self.assertGreater(GamePlay.objects.count(), 0)

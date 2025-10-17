@@ -18,6 +18,11 @@ Baseball coaching backend powered by Django and Django REST Framework. It stores
    ```bash
    python manage.py runserver
    ```
+4. Visit `http://localhost:8000/` for the built-in coaching dashboard, or continue to the sections below to work with the API or React SPA.
+
+### Django coaching dashboard
+
+The root route (`/`) renders a server-side form that mirrors the API contract. Submit the game context to view recommendations and optionally persist them to history without leaving the Django site.
 
 ### Frontend (React single-page app)
 
@@ -100,5 +105,6 @@ All endpoints are nested under `/api/` and return JSON responses.
 ## Next Steps
 
 - Layer authentication/permissions on the API before exposing it publicly.
+- Add role-aware views to the Django dashboard (coach vs. analyst) as authorization gets introduced.
 - Expose web and mobile clients using the `/api/` contract defined here.
 - Replace the deterministic engine with analytics-driven recommendations as data accumulates.
